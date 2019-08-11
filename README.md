@@ -29,7 +29,8 @@ jobs:
         DESTINATION_REPO: ""
         DESTINATION_BRANCH: ""
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-      args: $SOURCE_REPO $SOURCE_BRANCH $DESTINATION_REPO $DESTINATION_BRANCH
+      with:
+        args: $SOURCE_REPO $SOURCE_BRANCH $DESTINATION_REPO $DESTINATION_BRANCH
 ```
 `SSH_PRIVATE_KEY` can be omitted if using authenticated HTTPS repo clone urls like `https://username:access_token@github.com/username/repository.git`.
 
