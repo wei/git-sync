@@ -34,3 +34,4 @@ echo "DESTINATION=$DESTINATION_REPO:$DESTINATION_BRANCH"
 git clone "$SOURCE_REPO" --origin source && cd `basename "$SOURCE_REPO" .git`
 git remote add destination "$DESTINATION_REPO"
 git push destination "${SOURCE_BRANCH}:${DESTINATION_BRANCH}" -f
+git push --tags destination "${SOURCE_BRANCH}:${DESTINATION_BRANCH}"
