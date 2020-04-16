@@ -31,6 +31,6 @@ fi
 echo "SOURCE=$SOURCE_REPO:$SOURCE_BRANCH"
 echo "DESTINATION=$DESTINATION_REPO:$DESTINATION_BRANCH"
 
-git clone "$SOURCE_REPO" --origin source && cd `basename "$SOURCE_REPO" .git`
+git clone "$SOURCE_REPO" source --origin source && cd source
 git remote add destination "$DESTINATION_REPO"
 git push destination "${SOURCE_BRANCH}:${DESTINATION_BRANCH}" -f
