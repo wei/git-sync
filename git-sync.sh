@@ -17,7 +17,7 @@ then
     SOURCE_REPO="https://github.com/${SOURCE_REPO}.git"
   fi
 fi
-if ! echo $DESTINATION_REPO | grep '.git'
+if ! echo $DESTINATION_REPO | grep -E '.git|@'
 then
   if [[ -n "$SSH_PRIVATE_KEY" ]]
   then
