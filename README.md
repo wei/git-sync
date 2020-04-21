@@ -12,6 +12,8 @@ A GitHub Action for syncing between two independent repositories using **force p
 
 ## Usage
 
+Always make a full backup of your repo (`git clone --mirror`) before using this action.
+
 ### GitHub Actions
 ```
 # File: .github/workflows/repo-sync.yml
@@ -37,6 +39,10 @@ jobs:
 #### Advanced: Sync all branches
 
 To Sync all branches from source to destination, use `SOURCE_BRANCH: "refs/remotes/source/*"` and `DESTINATION_BRANCH: "refs/heads/*"`. But be careful, branches with the same name including `master` will be overwritten.
+
+#### Advanced: Sync all tags
+
+To Sync all tags from source to destination, use `SOURCE_BRANCH: "refs/tags/*"` and `DESTINATION_BRANCH: "refs/tags/*"`. But be careful, tags with the same name will be overwritten.
 
 ### Docker
 ```
