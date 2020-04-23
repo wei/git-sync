@@ -24,25 +24,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: repo-sync
-      uses: wei/git-sync@v1
-      env:
-        SOURCE_REPO: ""
-        SOURCE_BRANCH: ""
-        DESTINATION_REPO: ""
-        DESTINATION_BRANCH: ""
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      uses: wei/git-sync@v2
       with:
-        args: $SOURCE_REPO $SOURCE_BRANCH $DESTINATION_REPO $DESTINATION_BRANCH
+        source_repo: ""
+        source_branch: ""
+        destination_repo: ""
+        destination_branch: ""
+        ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
 ```
-`SSH_PRIVATE_KEY` can be omitted if using authenticated HTTPS repo clone urls like `https://username:access_token@github.com/username/repository.git`.
+`ssh_private_key` can be omitted if using authenticated HTTPS repo clone urls like `https://username:access_token@github.com/username/repository.git`.
 
 #### Advanced: Sync all branches
 
-To Sync all branches from source to destination, use `SOURCE_BRANCH: "refs/remotes/source/*"` and `DESTINATION_BRANCH: "refs/heads/*"`. But be careful, branches with the same name including `master` will be overwritten.
+To Sync all branches from source to destination, use `source_branch: "refs/remotes/source/*"` and `destination_branch: "refs/heads/*"`. But be careful, branches with the same name including `master` will be overwritten.
 
 #### Advanced: Sync all tags
 
-To Sync all tags from source to destination, use `SOURCE_BRANCH: "refs/tags/*"` and `DESTINATION_BRANCH: "refs/tags/*"`. But be careful, tags with the same name will be overwritten.
+To Sync all tags from source to destination, use `source_branch: "refs/tags/*"` and `destination_branch: "refs/tags/*"`. But be careful, tags with the same name will be overwritten.
 
 ### Docker
 ```
