@@ -7,7 +7,7 @@ SOURCE_BRANCH=$2
 DESTINATION_REPO=$3
 DESTINATION_BRANCH=$4
 
-if ! echo $SOURCE_REPO | grep '.git'
+if ! echo $SOURCE_REPO | grep -Eq ':|@|\.git\/?$'
 then
   if [[ -n "$SSH_PRIVATE_KEY" ]]
   then
@@ -17,7 +17,7 @@ then
     SOURCE_REPO="https://github.com/${SOURCE_REPO}.git"
   fi
 fi
-if ! echo $DESTINATION_REPO | grep -E '.git|@'
+if ! echo $DESTINATION_REPO | grep -Eq ':|@|\.git\/?$'
 then
   if [[ -n "$SSH_PRIVATE_KEY" ]]
   then
