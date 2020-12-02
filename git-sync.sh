@@ -9,7 +9,7 @@ DESTINATION_BRANCH=$4
 
 if ! echo $SOURCE_REPO | grep -Eq ':|@|\.git\/?$'
 then
-  if [[ -n "$SSH_PRIVATE_KEY" ]]
+  if [[ -n "$SOURCE_SSH_PRIVATE_KEY" ]]
   then
     SOURCE_REPO="git@github.com:${SOURCE_REPO}.git"
     GIT_SSH_COMMAND="ssh -v"
@@ -19,7 +19,7 @@ then
 fi
 if ! echo $DESTINATION_REPO | grep -Eq ':|@|\.git\/?$'
 then
-  if [[ -n "$SSH_PRIVATE_KEY" ]]
+  if [[ -n "$DESTINATION_SSH_PRIVATE_KEY" ]]
   then
     DESTINATION_REPO="git@github.com:${DESTINATION_REPO}.git"
     GIT_SSH_COMMAND="ssh -v"
@@ -31,7 +31,14 @@ fi
 echo "SOURCE=$SOURCE_REPO:$SOURCE_BRANCH"
 echo "DESTINATION=$DESTINATION_REPO:$DESTINATION_BRANCH"
 
-git clone "$SOURCE_REPO" /root/source --origin source && cd /root/source
+if [[ -n "$SOURCE_SSH_PRIVATE_KEY" ]]
+then
+  # Clone using source ssh key
+  git clone -c core.sshCommand="/usr/bin/ssh -i ~/.ssh/src_id_rsa" "$SOURCE_REPO" /root/source --origin source && cd /root/source
+else
+  git clone "$SOURCE_REPO" /root/source --origin source && cd /root/source
+fi
+
 git remote add destination "$DESTINATION_REPO"
 
 # Pull all branches references down locally so subsequent commands can see them
@@ -39,5 +46,11 @@ git fetch source '+refs/heads/*:refs/heads/*' --update-head-ok
 
 # Print out all branches
 git --no-pager branch -a -vv
+
+if [[ -n "$DESTINATION_SSH_PRIVATE_KEY" ]]
+then
+  # Push using destination ssh key
+  git config --local core.sshCommand "/usr/bin/ssh -i ~/.ssh/dst_id_rsa"
+fi
 
 git push destination "${SOURCE_BRANCH}:${DESTINATION_BRANCH}" -f

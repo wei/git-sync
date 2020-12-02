@@ -17,14 +17,18 @@ inputs:
   destination_branch:
     description: Branch name to sync to
     required: true
-  ssh_private_key:
-    description: SSH key used to authenticate with git clone urls provided (optional if public or https clone url with authentication)
+  source_ssh_private_key:
+    description: SSH key used to authenticate with source ssh clone url provided (optional if public or https clone url with authentication)
+    required: false
+  destination_ssh_private_key:
+    description: SSH key used to authenticate with destination ssh clone url provided (optional if public or https clone url with authentication)
     required: false
 runs:
   using: 'docker'
   image: 'Dockerfile'
   env:
-    SSH_PRIVATE_KEY: ${{ inputs.ssh_private_key }}
+    SOURCE_SSH_PRIVATE_KEY: ${{ inputs.source_ssh_private_key }}
+    DESTINATION_SSH_PRIVATE_KEY: ${{ inputs.destination_ssh_private_key }}
   args:
     - ${{ inputs.source_repo }}
     - ${{ inputs.source_branch }}
