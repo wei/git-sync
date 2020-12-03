@@ -13,15 +13,21 @@ A GitHub Action for syncing between two independent repositories using **force p
 
 > Always make a full backup of your repo (`git clone --mirror`) before using this action.
 
-- Generate different ssh keys for both source and destination repositories, leave passphrase empty
+- Either generate different ssh keys for both source and destination repositories or use the same one for both, leave passphrase empty (note that GitHub deploy keys must be unique)
 
 ```sh
 $ ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
 ```
 
-- In GitHub add the public keys (`key_name.pub`) to _Settings > Deploy keys_ for each repository respectively, allow write access for the destination repository
+- In GitHub, either:
 
-- Add both the private keys to _Settings > Secrets_ for the repository containing the action (`SOURCE_SSH_PRIVATE_KEY` and `DESTINATION_SSH_PRIVATE_KEY`)
+  - add the unique public keys (`key_name.pub`) to _Repo Settings > Deploy keys_ for each repository respectively and allow write access for the destination repository
+
+  or
+
+  - add the single public key (`key_name.pub`) to _Personal Settings > SSH keys_
+
+- Add the private key(s) to _Repo > Settings > Secrets_ for the repository containing the action (`SSH_PRIVATE_KEY` or `SOURCE_SSH_PRIVATE_KEY` and `DESTINATION_SSH_PRIVATE_KEY`)
 
 ### GitHub Actions
 
@@ -36,17 +42,18 @@ jobs:
       - name: repo-sync
         uses: wei/git-sync@v2
         with:
-          source_repo: "git@github.com:username/repository.git"
+          source_repo: "username/repository"
           source_branch: "main"
           destination_repo: "git@github.com:org/repository.git"
           destination_branch: "main"
-          source_ssh_private_key: ${{ secrets.SOURCE_SSH_PRIVATE_KEY }}
-          destination_ssh_private_key: ${{ secrets.DESTINATION_SSH_PRIVATE_KEY }}
+          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }} # optional
+          source_ssh_private_key: ${{ secrets.SOURCE_SSH_PRIVATE_KEY }} # optional, will override `SSH_PRIVATE_KEY`
+          destination_ssh_private_key: ${{ secrets.DESTINATION_SSH_PRIVATE_KEY }} # optional, will override `SSH_PRIVATE_KEY`
 ```
 
 ##### Alternative using https
 
-The `source_ssh_private_key` and `destination_ssh_private_key` can be omitted if using authenticated https urls.
+The `ssh_private_key`, `source_ssh_private_key` and `destination_ssh_private_key` can be omitted if using authenticated https urls.
 
 ```yml
 source_repo: "https://username:personal_access_token@github.com/username/repository.git"
@@ -73,7 +80,7 @@ destination_branch: "refs/tags/*"
 ### Docker
 
 ```sh
-$ docker run --rm -e "SOURCE_SSH_PRIVATE_KEY=$(cat ~/.ssh/id_rsa)" $(docker build -q .) \
+$ docker run --rm -e "SSH_PRIVATE_KEY=$(cat ~/.ssh/id_rsa)" $(docker build -q .) \
   $SOURCE_REPO $SOURCE_BRANCH $DESTINATION_REPO $DESTINATION_BRANCH
 ```
 
