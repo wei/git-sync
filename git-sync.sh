@@ -1,11 +1,11 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e
 
 SOURCE_REPO=$1
-SOURCE_BRANCH=$2
-DESTINATION_REPO=$3
-DESTINATION_BRANCH=$4
+DESTINATION_REPO=$2
+SOURCE_BRANCH=${3:-"*"}
+DESTINATION_BRANCH=${4:-"*"}
 
 if ! echo $SOURCE_REPO | grep -Eq ':|@|\.git\/?$'; then
   if [[ -n "$SSH_PRIVATE_KEY" || -n "$SOURCE_SSH_PRIVATE_KEY" ]]; then
@@ -25,8 +25,16 @@ if ! echo $DESTINATION_REPO | grep -Eq ':|@|\.git\/?$'; then
   fi
 fi
 
-echo "SOURCE=$SOURCE_REPO:$SOURCE_BRANCH"
-echo "DESTINATION=$DESTINATION_REPO:$DESTINATION_BRANCH"
+echo "SOURCE --> $SOURCE_REPO:$SOURCE_BRANCH"
+echo "DESTINATION --> $DESTINATION_REPO:$DESTINATION_BRANCH"
+
+if [[ "$SOURCE_BRANCH" == "*" ]]; then
+  SOURCE_BRANCH=".*"
+fi
+
+if [[ "$DESTINATION_BRANCH" == "*" ]]; then
+  DESTINATION_BRANCH="refs/heads/*"
+fi
 
 if [[ -n "$SOURCE_SSH_PRIVATE_KEY" ]]; then
   # Clone using source ssh key if provided
@@ -41,11 +49,42 @@ git remote add destination "$DESTINATION_REPO"
 git fetch source '+refs/heads/*:refs/heads/*' --update-head-ok
 
 # Print out all branches
-git --no-pager branch -a -vv
+# git --no-pager branch -a -vv
 
 if [[ -n "$DESTINATION_SSH_PRIVATE_KEY" ]]; then
   # Push using destination ssh key if provided
   git config --local core.sshCommand "/usr/bin/ssh -i ~/.ssh/dst_rsa"
 fi
 
-git push destination "${SOURCE_BRANCH}:${DESTINATION_BRANCH}" -f
+SOURCE_BRANCHES=($(git branch -a | grep source/* | grep -v HEAD | sed 's/remotes\/source\///g'))
+
+echo "SOURCE_BRANCHES --> $(
+  IFS=,
+  echo "${SOURCE_BRANCHES[*]}"
+)"
+
+if [[ -n "$COMMIT_USER_EMAIL" && -n "$COMMIT_USER_NAME" ]]; then
+  git config --global user.email $COMMIT_USER_EMAIL
+  git config --global user.name $COMMIT_USER_NAME
+fi
+
+for BRANCH in "${SOURCE_BRANCHES[@]}"; do
+  BRANCH_REGEX="($SOURCE_BRANCH)"
+
+  if [[ $BRANCH =~ $BRANCH_REGEX ]]; then
+    echo "SYNCING --> $BRANCH"
+
+    git checkout $BRANCH
+
+    if [[ -n "$COMMIT_USER_EMAIL" && -n "$COMMIT_USER_NAME" ]]; then
+      # git commit --amend --author="Git Sync <git@sync.git>" --no-edit
+      git commit --allow-empty --message="git-sync: $(git log -1 --oneline)"
+    fi
+
+    git push destination "${DESTINATION_BRANCH}" --force
+  fi
+done
+
+if [[ -n "$SYNC_TAGS" ]]; then
+  git push destination "refs/tags/*:refs/tags/*" -f
+fi

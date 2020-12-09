@@ -8,6 +8,7 @@ A GitHub Action for syncing between two independent repositories using **force p
 - Sync branches to/from a remote repository
 - GitHub action can be triggered on a timer or on push
 - To sync with current repository, please checkout [Github Repo Sync](https://github.com/marketplace/actions/github-repo-sync)
+- Optional _git-sync_ commit with a specific user
 
 ## Usage
 
@@ -43,12 +44,15 @@ jobs:
         uses: wei/git-sync@v2
         with:
           source_repo: "username/repository"
-          source_branch: "main"
           destination_repo: "git@github.com:org/repository.git"
-          destination_branch: "main"
+          source_branch: "main" # [regexp] optional, will sync all by default
+          destination_branch: "main" # [string] optional, will sync all by default
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }} # optional
           source_ssh_private_key: ${{ secrets.SOURCE_SSH_PRIVATE_KEY }} # optional, will override `SSH_PRIVATE_KEY`
           destination_ssh_private_key: ${{ secrets.DESTINATION_SSH_PRIVATE_KEY }} # optional, will override `SSH_PRIVATE_KEY`
+          commit_user_email: ${{ secrets.COMMIT_USER_EMAIL }} # optional, will trigger 'git-sync' commit
+          commit_user_name: ${{ secrets.COMMIT_USER_NAME }} # optional, will trigger 'git-sync' commit
+          sync_tags: ${{ secrets.SYNC_TAGS }} # optional, will sync all tags
 ```
 
 ##### Alternative using https
@@ -59,29 +63,11 @@ The `ssh_private_key`, `source_ssh_private_key` and `destination_ssh_private_key
 source_repo: "https://username:personal_access_token@github.com/username/repository.git"
 ```
 
-#### Advanced: Sync all branches
-
-To Sync all branches from source to destination, use `source_branch: "refs/remotes/source/*"` and `destination_branch: "refs/heads/*"`. But be careful, branches with the same name including `master` will be overwritten.
-
-```yml
-source_branch: "refs/remotes/source/*"
-destination_branch: "refs/heads/*"
-```
-
-#### Advanced: Sync all tags
-
-To Sync all tags from source to destination, use `source_branch: "refs/tags/*"` and `destination_branch: "refs/tags/*"`. But be careful, tags with the same name will be overwritten.
-
-```yml
-source_branch: "refs/tags/*"
-destination_branch: "refs/tags/*"
-```
-
 ### Docker
 
 ```sh
 $ docker run --rm -e "SSH_PRIVATE_KEY=$(cat ~/.ssh/id_rsa)" $(docker build -q .) \
-  $SOURCE_REPO $SOURCE_BRANCH $DESTINATION_REPO $DESTINATION_BRANCH
+  $SOURCE_REPO $DESTINATION_REPO $SOURCE_BRANCH $DESTINATION_BRANCH
 ```
 
 ## Author

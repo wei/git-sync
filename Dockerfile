@@ -4,7 +4,7 @@ LABEL "repository"="http://github.com/wei/git-sync"
 LABEL "homepage"="http://github.com/wei/git-sync"
 LABEL "maintainer"="Wei He <github@weispot.com>"
 
-RUN apk add --no-cache git openssh-client && \
+RUN apk add --no-cache git openssh-client bash && \
   echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config
 
 ADD *.sh /
