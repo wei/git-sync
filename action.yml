@@ -1,30 +1,38 @@
 name: Git Sync Action
 author: Wei He <github@weispot.com>
-description: 🔃 Sync between two independent repositories
+description: 🔃  Sync between two independent repositories
 branding:
   icon: 'git-branch'
   color: 'gray-dark'
 inputs:
   source_repo:
-    description: GitHub repo slug or full clone url
+    description: GitHub repo slug or full url
     required: true
   source_branch:
     description: Branch name to sync from
     required: true
   destination_repo:
-    description: GitHub repo slug or full clone url
+    description: GitHub repo slug or full url
     required: true
   destination_branch:
     description: Branch name to sync to
     required: true
   ssh_private_key:
-    description: SSH key used to authenticate with git clone urls provided (optional if public or https clone url with authentication)
+    description: SSH key used to authenticate with source and destination ssh urls provided (optional if public or https url with authentication)
+    required: false
+  source_ssh_private_key:
+    description: SSH key used to authenticate with source ssh url provided (optional if public or https url with authentication)
+    required: false
+  destination_ssh_private_key:
+    description: SSH key used to authenticate with destination ssh url provided (optional if public or https url with authentication)
     required: false
 runs:
   using: 'docker'
   image: 'Dockerfile'
   env:
     SSH_PRIVATE_KEY: ${{ inputs.ssh_private_key }}
+    SOURCE_SSH_PRIVATE_KEY: ${{ inputs.source_ssh_private_key }}
+    DESTINATION_SSH_PRIVATE_KEY: ${{ inputs.destination_ssh_private_key }}
   args:
     - ${{ inputs.source_repo }}
     - ${{ inputs.source_branch }}
