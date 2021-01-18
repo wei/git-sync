@@ -40,7 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: repo-sync
-        uses: wei/git-sync@v2
+        uses: wei/git-sync@v3
         with:
           source_repo: "username/repository"
           source_branch: "main"
