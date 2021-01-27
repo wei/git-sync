@@ -32,14 +32,14 @@ $ ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
 ### GitHub Actions
 
 ```yml
-# .github/workflows/repo-sync.yml
+# .github/workflows/git-sync.yml
 
 on: push
 jobs:
-  repo-sync:
+  git-sync:
     runs-on: ubuntu-latest
     steps:
-      - name: repo-sync
+      - name: git-sync
         uses: wei/git-sync@v3
         with:
           source_repo: "username/repository"
