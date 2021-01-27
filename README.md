@@ -51,7 +51,18 @@ jobs:
           destination_ssh_private_key: ${{ secrets.DESTINATION_SSH_PRIVATE_KEY }} # optional, will override `SSH_PRIVATE_KEY`
 ```
 
-##### Alternative using https
+##### Using ssh
+
+The `source_repo` and `destination_repo` can also contain ssh clone url as follows:
+```yml
+source_repo: "git@github.com:username/repository.git"
+```
+or
+```yml
+source_repo: "git@gitlab.com:username/repository.git"
+```
+
+##### Using https
 
 The `ssh_private_key`, `source_ssh_private_key` and `destination_ssh_private_key` can be omitted if using authenticated https urls.
 
