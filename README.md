@@ -42,9 +42,9 @@ jobs:
       - name: repo-sync
         uses: wei/git-sync@v3
         with:
-          source_repo: "username/repository"
+          source_repo: "source_org/repository"
           source_branch: "main"
-          destination_repo: "git@github.com:org/repository.git"
+          destination_repo: "destination_org/repository.git"
           destination_branch: "main"
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }} # optional
           source_ssh_private_key: ${{ secrets.SOURCE_SSH_PRIVATE_KEY }} # optional, will override `SSH_PRIVATE_KEY`
