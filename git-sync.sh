@@ -6,6 +6,7 @@ SOURCE_REPO=$1
 SOURCE_BRANCH=$2
 DESTINATION_REPO=$3
 DESTINATION_BRANCH=$4
+DESTINATION_FORCE_PUSH=$5
 
 if ! echo $SOURCE_REPO | grep -Eq ':|@|\.git\/?$'; then
   if [[ -n "$SSH_PRIVATE_KEY" || -n "$SOURCE_SSH_PRIVATE_KEY" ]]; then
@@ -48,4 +49,8 @@ if [[ -n "$DESTINATION_SSH_PRIVATE_KEY" ]]; then
   git config --local core.sshCommand "/usr/bin/ssh -i ~/.ssh/dst_rsa"
 fi
 
-git push destination "${SOURCE_BRANCH}:${DESTINATION_BRANCH}" -f
+if [[ -n "$SOURCE_SSH_PRIVATE_KEY" ]]; then
+    git push destination "${SOURCE_BRANCH}:${DESTINATION_BRANCH}" -f
+else
+    git push destination "${SOURCE_BRANCH}:${DESTINATION_BRANCH}"
+fi
