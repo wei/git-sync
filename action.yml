@@ -26,6 +26,9 @@ inputs:
   destination_ssh_private_key:
     description: SSH key used to authenticate with destination ssh url provided (optional if public or https url with authentication)
     required: false
+  update_head:
+    description: Update HEAD reference
+    required: false
 runs:
   using: 'docker'
   image: 'Dockerfile'
@@ -33,6 +36,7 @@ runs:
     SSH_PRIVATE_KEY: ${{ inputs.ssh_private_key }}
     SOURCE_SSH_PRIVATE_KEY: ${{ inputs.source_ssh_private_key }}
     DESTINATION_SSH_PRIVATE_KEY: ${{ inputs.destination_ssh_private_key }}
+    UPDATE_HEAD: ${{ inputs.update_head }}
   args:
     - ${{ inputs.source_repo }}
     - ${{ inputs.source_branch }}
