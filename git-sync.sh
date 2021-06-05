@@ -38,7 +38,11 @@ fi
 git remote add destination "$DESTINATION_REPO"
 
 # Pull all branches references down locally so subsequent commands can see them
-git fetch source '+refs/heads/*:refs/heads/*' --update-head-ok
+if [[ -n "$UPDATE_HEAD" && "$UPDATE_HEAD" = true ]]; then
+  git fetch source '+refs/heads/*:refs/heads/*' --update-head-ok
+else
+  git fetch source '+refs/heads/*:refs/heads/*'
+fi
 
 # Print out all branches
 git --no-pager branch -a -vv
