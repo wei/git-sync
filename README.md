@@ -30,6 +30,7 @@ jobs:
           source_branch: "main"
           destination_repo: "destination_org/repository"
           destination_branch: "main"
+          destination_force_push: "true" # optional, whether to force push to destination
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }} # optional
           source_ssh_private_key: ${{ secrets.SOURCE_SSH_PRIVATE_KEY }} # optional, will override `SSH_PRIVATE_KEY`
           destination_ssh_private_key: ${{ secrets.DESTINATION_SSH_PRIVATE_KEY }} # optional, will override `SSH_PRIVATE_KEY`
