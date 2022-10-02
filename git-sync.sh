@@ -49,7 +49,7 @@ if [[ -n "$DESTINATION_SSH_PRIVATE_KEY" ]]; then
   git config --local core.sshCommand "/usr/bin/ssh -i ~/.ssh/dst_rsa"
 fi
 
-if [[ -n "$SOURCE_SSH_PRIVATE_KEY" ]]; then
+if  [[ -n "$DESTINATION_FORCE_PUSH" && "$DESTINATION_FORCE_PUSH" = true ]]; then
     git push destination "${SOURCE_BRANCH}:${DESTINATION_BRANCH}" -f
 else
     git push destination "${SOURCE_BRANCH}:${DESTINATION_BRANCH}"
